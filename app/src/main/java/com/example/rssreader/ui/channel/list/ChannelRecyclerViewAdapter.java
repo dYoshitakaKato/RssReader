@@ -44,9 +44,6 @@ public class ChannelRecyclerViewAdapter extends ListAdapter<ChannelData, Channel
                     if (oldItem.categoryId != newItem.categoryId) {
                         return false;
                     }
-                    if (oldItem.name != newItem.name) {
-                        return false;
-                    }
                     return oldItem.link.equals(newItem.link);
                 }
             };
