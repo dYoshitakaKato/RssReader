@@ -8,6 +8,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.RecyclerView;
 import dagger.hilt.android.AndroidEntryPoint;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
@@ -104,6 +105,9 @@ public class ChannelFragment extends Fragment implements ItemClickListener<Chann
         };
         mViewModel.channel.observe(binding.getLifecycleOwner(), observer);
         binding.channelList.setAdapter(mAdapter);
+        RecyclerView.ItemDecoration itemDecoration =
+                new DividerItemDecoration(this.getActivity(), DividerItemDecoration.VERTICAL);
+        binding.channelList.addItemDecoration(itemDecoration);
 
         return binding.getRoot();
     }
