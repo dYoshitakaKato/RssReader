@@ -96,28 +96,13 @@ public class ArticlesFragment extends Fragment implements ItemClickListener<Inte
                 mViewModel.pIsInitialLoading.setValue(false);
             }
         });
-        mViewModel.pIsEmptyList.observe(binding.getLifecycleOwner(), new Observer<Boolean>() {
-            @Override
-            public void onChanged(Boolean aBoolean) {
-//                if (aBoolean) {
-//                    binding.emptyMessage.setVisibility(View.VISIBLE);
-//                    return;
-//                }
-//                binding.emptyMessage.setVisibility(View.INVISIBLE);
-            }
-        });
         mViewModel.pIsInitialLoading.observe(binding.getLifecycleOwner(), new Observer<Boolean>() {
             @Override
             public void onChanged(Boolean aBoolean) {
                 if (aBoolean) {
                     mViewModel.fetchCategoryFeed(mViewModel.pCategoryId.getValue());
-//                    binding.initialiLoadingIndicator.show();
-//                    binding.initialiLoadingIndicator.setVisibility(View.VISIBLE);
                     mViewModel.pIsEmptyList.setValue(false);
-                    return;
                 }
-//                binding.initialiLoadingIndicator.hide();
-//                binding.initialiLoadingIndicator.setVisibility(View.INVISIBLE);
             }
         });
         mViewModel.pScackbar.observe(binding.getLifecycleOwner(), new Observer<String>() {
