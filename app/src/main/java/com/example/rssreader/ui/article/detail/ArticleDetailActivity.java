@@ -1,41 +1,39 @@
 package com.example.rssreader.ui.article.detail;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 
 import com.example.rssreader.databinding.ActivityArticleDetailBinding;
 
-public class ArticleDetailActivity extends AppCompatActivity {
+import java.util.ArrayList;
+
+import androidx.fragment.app.FragmentActivity;
+import androidx.lifecycle.ViewModelProvider;
+
+public class ArticleDetailActivity extends FragmentActivity {
 
     private ArticleDetailViewModel mViewModel;
-    private ActivityArticleDetailBinding binding;
+    public ActivityArticleDetailBinding binding;
+    private PagerFragmentStateAdapter mAdapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mViewModel = new ViewModelProvider(this).get(ArticleDetailViewModel.class);
         binding = ActivityArticleDetailBinding.inflate(getLayoutInflater());
-        View view = binding.getRoot();
-        setContentView(view);
-        String url = getIntent().getStringExtra(EXTRA_KEY);
-        mViewModel = new ArticleDetailViewModel(binding, url);
-        binding.setLifecycleOwner(this);
-        binding.setViewModel(mViewModel);
-        binding.webView.getSettings().setJavaScriptEnabled(true);
+        mAdapter = new PagerFragmentStateAdapter(this,
+                getIntent().getStringArrayListExtra(URLS_KEY));
+        binding.detailPager.setAdapter(mAdapter);
+        setContentView(binding.getRoot());
+        binding.detailPager.setCurrentItem(getIntent().getIntExtra(SELECT_INDEX, 0));
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        binding = null;
-    }
-
-    private static String EXTRA_KEY = "url";
-    public static void transition(Activity activity, String url) {
+    private static String SELECT_INDEX = "SELECT-INDEX";
+    private static String URLS_KEY = "URLS";
+    public static void transition(Activity activity, int selectIndex, ArrayList<String> urls) {
         Intent intent = new Intent(activity, ArticleDetailActivity.class);
-        intent.putExtra(EXTRA_KEY, url);
+        intent.putExtra(SELECT_INDEX, selectIndex);
+        intent.putStringArrayListExtra(URLS_KEY, urls);
         activity.startActivity(intent);
     }
 }
