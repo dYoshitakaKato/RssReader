@@ -45,29 +45,19 @@ public class ArticleViewModel extends ViewModel {
 
     public void onRefresh() {
         isLoading.postValue(true);
-        fetchFeed("http://b.hatena.ne.jp/hotentry.rss");
     }
 
     public MutableLiveData<Boolean> isLoading = new MutableLiveData<>();
 
-    private MutableLiveData<String> snackbar = new MutableLiveData<>();
-
-    public void setOnItemClickListener(ItemClickListener<Article> listener) {
+    public void setOnItemClickListener(ItemClickListener<Integer> listener) {
         this.listener = listener;
     }
 
-    public void onItemClick(Article item) {
-        listener.onItemClicked(item);
+    public void onItemClick(int index) {
+        if (listener == null) {
+            return;
     }
-
-    public void fetchCategoryFeedAll() {
-        repository.selectAll().subscribeOn(Schedulers.io())
-                .observeOn(Schedulers.computation())
-                .subscribe(data -> {
-                    for (ChannelData channel : data) {
-                        fetchFeed(channel.link);
-                    }
-                });
+        listener.onItemClicked(index);
     }
 
     public void fetchCategoryFeed(int categoryId) {

@@ -20,10 +20,11 @@ public class ArticleViewHolder extends RecyclerView.ViewHolder {
         this.binding = binding;
     }
 
-    public void bind(Article item, LifecycleOwner lifecycleOwner, ArticleViewModel viewModel) {
+    public void bind(Article item, LifecycleOwner lifecycleOwner, ArticleViewModel viewModel, int index) {
         binding.setArticle(item);
         binding.setLifecycleOwner(lifecycleOwner);
         binding.setViewModel(viewModel);
+        binding.setIndex(index);
         binding.executePendingBindings();
     }
 
@@ -36,7 +37,7 @@ public class ArticleViewHolder extends RecyclerView.ViewHolder {
         return new ArticleViewHolder(itemBinding);
     }
 
-    public void onBindViewHolder(LifecycleOwner owner, ArticleViewModel viewModel ,Article item) {
-        bind(item, owner, viewModel);
+    public void onBindViewHolder(LifecycleOwner owner, ArticleViewModel viewModel ,Article item, int index) {
+        bind(item, owner, viewModel, index);
     }
 }

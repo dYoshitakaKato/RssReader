@@ -153,8 +153,12 @@ public class ArticlesFragment extends Fragment implements ItemClickListener<Arti
     }
 
     @Override
-    public void onItemClicked(Article item) {
-        ArticleDetailActivity.transition(this.getActivity(), item.getSourceUrl());
+    public void onItemClicked(Integer index) {
+        ArrayList<String> urls = new ArrayList<>();
+        for (Article article : mViewModel.articlesListLive.getValue()) {
+            urls.add(article.getLink());
+        }
+        ArticleDetailActivity.transition(this.getActivity(), index, urls);
     }
 
     @Override

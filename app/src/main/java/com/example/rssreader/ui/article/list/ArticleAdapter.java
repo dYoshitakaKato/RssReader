@@ -15,7 +15,6 @@ public class ArticleAdapter extends ListAdapter<com.prof.rssparser.Article, Arti
 
     public ArticleAdapter(FragmentArticlesBinding binding) {
         super(DIFF_CALLBACK);
-//        RecyclerView.ViewHolder holder = binding.getRoot();
         this.binding = binding;
     }
 
@@ -49,6 +48,6 @@ public class ArticleAdapter extends ListAdapter<com.prof.rssparser.Article, Arti
 
     @Override
     public void onBindViewHolder(@NonNull @NotNull ArticleViewHolder holder, int position) {
-        holder.onBindViewHolder(binding.getLifecycleOwner(), binding.getViewModel(), getItem(position));
+        holder.onBindViewHolder(binding.getLifecycleOwner(), binding.getViewModel(), getItem(position), position);
     }
 }
