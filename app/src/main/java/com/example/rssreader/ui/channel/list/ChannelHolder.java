@@ -15,7 +15,6 @@ import androidx.lifecycle.LifecycleOwner;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class ChannelHolder extends RecyclerView.ViewHolder {
-    public ChannelData mItem;
     private final FragmentChannelItemBinding binding;
 
     public ChannelHolder(FragmentChannelItemBinding binding) {
