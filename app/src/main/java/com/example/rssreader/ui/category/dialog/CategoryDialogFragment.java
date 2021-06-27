@@ -9,18 +9,21 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.lifecycle.Observer;
 import dagger.hilt.android.AndroidEntryPoint;
 
 import android.view.LayoutInflater;
 
 import com.example.rssreader.R;
 import com.example.rssreader.databinding.CategoryFragmentDialogBinding;
+import com.google.android.material.snackbar.Snackbar;
 
 import org.jetbrains.annotations.NotNull;
 
 @AndroidEntryPoint
 public class CategoryDialogFragment extends DialogFragment {
     private CategoryDialogFragmentViewModel mViewModel;
+    private CategoryFragmentDialogBinding mBinding;
 
     public static CategoryDialogFragment newInstance() {
         return newInstance(0);
@@ -51,21 +54,32 @@ public class CategoryDialogFragment extends DialogFragment {
     @Override
     public Dialog onCreateDialog(@Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        CategoryFragmentDialogBinding binding = CategoryFragmentDialogBinding.inflate(requireActivity().getLayoutInflater());
+        mBinding = CategoryFragmentDialogBinding.inflate(requireActivity().getLayoutInflater());
         mViewModel = getDefaultViewModelProviderFactory().create(CategoryDialogFragmentViewModel.class);
-        binding.setViewModel(mViewModel);
-        binding.setLifecycleOwner(this);
+        mBinding.setViewModel(mViewModel);
+        mBinding.setLifecycleOwner(this);
         mViewModel.loadCategory(mCategoryId);
-        // Get the layout inflater
-        LayoutInflater inflater = requireActivity().getLayoutInflater();
-        // Inflate and set the layout for the dialog
-        // Pass null as the parent view because its going in the dialog layout
-        builder.setView(binding.getRoot())
-                // Add action buttons
-                .setPositiveButton(R.string.alert_positive, new DialogInterface.OnClickListener() {
+        mViewModel.pSnackbar.observe(this, new Observer<String>() {
+            @Override
+            public void onChanged(String s) {
+                if (s == null) {
+                    return;
+                }
+                if (s.isEmpty()) {
+                    return;
+                }
+                Snackbar.make(getActivity().getWindow().getDecorView().getRootView(), s, Snackbar.LENGTH_LONG).show();
+            }
+        });
+        builder.setView(mBinding.getRoot())
+                .setPositiveButton(R.string.regist, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
-                        mViewModel.regist();
+                        if (mViewModel.isValid()) {
+                            mViewModel.regist();
+                            return;
+                        }
+                        mViewModel.pSnackbar.setValue("名前が入力されていないため、登録に失敗しました。");
                     }
                 })
                 .setNegativeButton(R.string.alert_negative, new DialogInterface.OnClickListener() {

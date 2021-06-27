@@ -7,13 +7,9 @@ import com.example.rssreader.repository.CategoryRepository;
 
 import javax.inject.Inject;
 
-import androidx.databinding.Bindable;
-import androidx.databinding.ObservableField;
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 import dagger.hilt.android.lifecycle.HiltViewModel;
-import dagger.hilt.android.scopes.ActivityScoped;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 
@@ -25,27 +21,36 @@ public class CategoryDialogFragmentViewModel extends ViewModel {
     public MutableLiveData<CategoryData> data = new MutableLiveData<>(new CategoryData());
     private final CategoryRepository repository;
 
+    public MutableLiveData<String> pSnackbar = new MutableLiveData<>("");
 
     @Inject
-    CategoryDialogFragmentViewModel(CategoryRepository repository) {
-        this.repository = repository;
+    CategoryDialogFragmentViewModel(CategoryRepository mRepository) {
+        this.mRepository = mRepository;
     }
 
     public void regist() {
-        if (data.getValue().id == 0) {
-            repository.insertAll(data.getValue());
+        if (pData.getValue().id == 0) {
+            mRepository.insertAll(pData.getValue());
         }
-        repository.update(data.getValue());
+        mRepository.update(pData.getValue());
     }
 
     public void loadCategory(int categoryId) {
         if (categoryId == -1) {
             return;
         }
-        repository.loadAllById(categoryId).subscribeOn(Schedulers.io())
+        mRepository.loadAllById(categoryId).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(value -> data.postValue(value),
+                .subscribe(value -> pData.postValue(value),
                         throwable -> Log.e(TAG, "Unable to get username", throwable));
+    }
+
+    public boolean isValid() {
+        CategoryData data = pData.getValue();
+        if (data == null) {
+            return false;
+        }
+        return data.name != null;
     }
 }
 
