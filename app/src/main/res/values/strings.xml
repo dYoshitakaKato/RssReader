@@ -2,7 +2,7 @@
     <string name="app_name">RssReader</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_title">カテゴリ</string>
     <string name="nav_header_subtitle">android.studio@android.com</string>
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
@@ -11,7 +11,7 @@
     <string name="menu_gallery">Gallery</string>
     <string name="menu_slideshow">Slideshow</string>
     <string name="alert_positive">OK</string>
-    <string name="alert_negative">Cancel</string>
+    <string name="alert_negative">キャンセル</string>
     <string name="alert_title">ネットワーク接続エラー</string>
     <string name="alert_message">ネットワークに接続していません。\n接続を確認してください。</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
@@ -19,4 +19,6 @@
     <string name="delete">削除</string>
     <string name="add">追加</string>
     <string name="channel_list">チャンネル一覧</string>
+    <string name="edit_category_hist_text">カテゴリ名</string>
+    <string name="regist">登録</string>
 </resources>
