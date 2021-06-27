@@ -15,6 +15,9 @@ import java.util.List;
 
 public class RssParser {
     public Article parse(Reader in, Article article) throws XmlPullParserException, IOException {
+        if (!isParse(article)) {
+            return article;
+        }
         try {
             XmlPullParser parser = Xml.newPullParser();
             parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false);
@@ -23,6 +26,19 @@ public class RssParser {
         } finally {
             in.close();
         }
+    }
+
+    private boolean isParse(Article article) {
+        if (article.getLink() == null) {
+            return true;
+        }
+        if (article.getTitle() == null) {
+            return true;
+        }
+        if (article.getLink().isEmpty()) {
+            return true;
+        }
+        return article.getTitle().isEmpty();
     }
 
     private Article parseArticle(XmlPullParser parser, Article article) throws IOException, XmlPullParserException {
