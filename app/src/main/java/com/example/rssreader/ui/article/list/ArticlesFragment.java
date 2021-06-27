@@ -13,15 +13,10 @@ import com.example.rssreader.databinding.FragmentArticlesBinding;
 import com.example.rssreader.entities.CategoryData;
 import com.example.rssreader.ui.CategorySelectListener;
 import com.example.rssreader.ui.ItemClickListener;
-import com.example.rssreader.ui.RssParser;
 import com.example.rssreader.ui.article.detail.ArticleDetailActivity;
+import com.google.android.material.snackbar.Snackbar;
 import com.prof.rssparser.Article;
-import com.prof.rssparser.Channel;
 
-import org.xmlpull.v1.XmlPullParserException;
-
-import java.io.IOException;
-import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,10 +26,12 @@ import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.RecyclerView;
 import dagger.hilt.android.AndroidEntryPoint;
 
 @AndroidEntryPoint
-public class ArticlesFragment extends Fragment implements ItemClickListener<Article>, CategorySelectListener {
+public class ArticlesFragment extends Fragment implements ItemClickListener<Integer>, CategorySelectListener {
     private ArticleViewModel mViewModel;
     private FragmentArticlesBinding binding;
     private int mCategoryId = 0;
@@ -55,11 +52,15 @@ public class ArticlesFragment extends Fragment implements ItemClickListener<Arti
         binding.setLifecycleOwner(this);
         mAdapter = new ArticleAdapter(binding);
         binding.arctilesRecyclerView.setAdapter(mAdapter);
+        RecyclerView.ItemDecoration itemDecoration =
+                new DividerItemDecoration(this.getActivity(), DividerItemDecoration.VERTICAL);
+        binding.arctilesRecyclerView.addItemDecoration(itemDecoration);
         mViewModel = new ViewModelProvider(this).get(ArticleViewModel.class);
         mViewModel.setOnItemClickListener(this);
         binding.setViewModel(mViewModel);
-        setObserver();
         updateCategoryId(mCategoryId);
+        setObserver();
+        mViewModel.pIsInitialLoading.postValue(true);
         return binding.getRoot();
     }
 
@@ -68,39 +69,69 @@ public class ArticlesFragment extends Fragment implements ItemClickListener<Arti
             @Override
             public void onChanged(List<Article> articles) {
                 mAdapter.submitList(articles);
-            }
-        });
-        mViewModel.channelsListLive.observe(binding.getLifecycleOwner(), new Observer<List<Channel>>() {
-            @Override
-            public void onChanged(@Nullable final List<Channel> newChannel) {
-                mViewModel.articlesListLive.postValue(parseArticle(newChannel));
-                mViewModel.isLoading.postValue(false);
+                mViewModel.pIsEmptyList.setValue(articles.isEmpty());
+                mViewModel.pIsInitialLoading.setValue(false);
+                mViewModel.isLoading.setValue(false);
             }
         });
         mViewModel.pCategoryId.observe(binding.getLifecycleOwner(), new Observer<Integer>() {
             @Override
             public void onChanged(Integer integer) {
-                mViewModel.isLoading.postValue(true);
-                mViewModel.channelsListLive.postValue(new ArrayList<>());
+                mViewModel.articlesListLive.setValue(new ArrayList<>());
+                mViewModel.pIsEmptyList.setValue(false);
+                mViewModel.pIsInitialLoading.setValue(true);
                 mViewModel.fetchCategoryFeed(integer);
             }
         });
-    }
-
-    private List<Article> parseArticle(List<Channel> channels) {
-        RssParser parser = new RssParser();
-        List<Article> list = new ArrayList<>();
-        for (Channel channel : channels) {
-            for (Article article: channel.getArticles()) {
-                StringReader stream = new StringReader(article.getContent());
-                try {
-                    list.add(parser.parse(stream, article));
-                } catch (XmlPullParserException | IOException e) {
-                    e.printStackTrace();
+        mViewModel.isLoading.observe(binding.getLifecycleOwner(), new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean aBoolean) {
+                if (aBoolean) {
+                    mViewModel.fetchCategoryFeed(mViewModel.pCategoryId.getValue());
+                    mViewModel.pIsInitialLoading.setValue(false);
+                    return;
                 }
+                boolean isEmpty = mViewModel.articlesListLive.getValue().isEmpty();
+                mViewModel.pIsEmptyList.setValue(isEmpty);
+                mViewModel.pIsInitialLoading.setValue(false);
             }
-        }
-        return list;
+        });
+        mViewModel.pIsEmptyList.observe(binding.getLifecycleOwner(), new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean aBoolean) {
+//                if (aBoolean) {
+//                    binding.emptyMessage.setVisibility(View.VISIBLE);
+//                    return;
+//                }
+//                binding.emptyMessage.setVisibility(View.INVISIBLE);
+            }
+        });
+        mViewModel.pIsInitialLoading.observe(binding.getLifecycleOwner(), new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean aBoolean) {
+                if (aBoolean) {
+                    mViewModel.fetchCategoryFeed(mViewModel.pCategoryId.getValue());
+//                    binding.initialiLoadingIndicator.show();
+//                    binding.initialiLoadingIndicator.setVisibility(View.VISIBLE);
+                    mViewModel.pIsEmptyList.setValue(false);
+                    return;
+                }
+//                binding.initialiLoadingIndicator.hide();
+//                binding.initialiLoadingIndicator.setVisibility(View.INVISIBLE);
+            }
+        });
+        mViewModel.pScackbar.observe(binding.getLifecycleOwner(), new Observer<String>() {
+            @Override
+            public void onChanged(String s) {
+                if (s == null) {
+                    return;
+                }
+                if (s.isEmpty()) {
+                    return;
+                }
+                Snackbar.make(getActivity().getWindow().getDecorView().getRootView(), s, Snackbar.LENGTH_LONG).show();
+            }
+        });
     }
 
     @Override

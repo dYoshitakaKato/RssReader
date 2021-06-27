@@ -5,6 +5,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context="com.example.rssreader.ui.article.list.ArticlesFragment">
     <data>
+        <import type="android.view.View"/>
         <variable
             name="view_model"
             type="com.example.rssreader.ui.article.list.ArticleViewModel" />
@@ -29,16 +30,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:indeterminate="true"
-            android:focusable="false"
-            android:clickable="false"
+            android:visibility="@{view_model.pIsInitialLoading ? View.VISIBLE : View.INVISIBLE}"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            android:visibility="invisible"
             app:layout_constraintBottom_toBottomOf="parent"/>
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/empty_message"
-            android:visibility="invisible"
             android:text="表示項目がありません。"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -46,6 +44,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
+            android:visibility="@{view_model.pIsEmptyList ? View.VISIBLE : View.INVISIBLE}"
             android:focusable="false"
             android:clickable="false" />
     </androidx.constraintlayout.widget.ConstraintLayout>
