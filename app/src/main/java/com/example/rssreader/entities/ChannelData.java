@@ -20,10 +20,6 @@ public class ChannelData {
     @NonNull
     public String link;
 
-    @ColumnInfo(name = "name")
-    @Nullable
-    public String name;
-
     @ColumnInfo(name = "category_id")
     public int categoryId;
 }
