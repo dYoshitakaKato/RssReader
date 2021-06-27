@@ -8,10 +8,7 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.Reader;
-import java.net.URL;
-import java.util.List;
 
 public class RssParser {
     public Article parse(Reader in, Article article) throws XmlPullParserException, IOException {
@@ -92,31 +89,5 @@ public class RssParser {
             }
         }
         return article;
-    }
-
-    // Processes link tags in the feed.
-    private String readLink(XmlPullParser parser) throws IOException, XmlPullParserException {
-        return parser.getAttributeValue(null, "cite");
-    }
-
-    // Processes link tags in the feed.
-    private String readImage(XmlPullParser parser) throws IOException, XmlPullParserException {
-        String link = "";
-        parser.require(XmlPullParser.START_TAG, null, "img");
-        String tag = parser.getName();
-        String relType = parser.getAttributeValue(null, "src");
-        if (tag.equals("img")) {
-            URL url = new URL(relType);
-            return relType;
-        }
-        return null;
-    }
-
-    // For the tags title and summary, extracts their text values.
-    private String readText(XmlPullParser parser, String a) throws IOException, XmlPullParserException {
-        String result = "";
-        result = parser.getAttributeValue(null, a);
-//        parser.nextTag();
-        return result;
     }
 }
