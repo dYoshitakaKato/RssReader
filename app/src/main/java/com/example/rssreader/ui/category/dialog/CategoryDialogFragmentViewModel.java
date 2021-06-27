@@ -17,10 +17,9 @@ import static android.content.ContentValues.TAG;
 
 @HiltViewModel
 public class CategoryDialogFragmentViewModel extends ViewModel {
-    // TODO: Implement the ViewModel
-    public MutableLiveData<CategoryData> data = new MutableLiveData<>(new CategoryData());
-    private final CategoryRepository repository;
 
+    public MutableLiveData<CategoryData> pData = new MutableLiveData<>(new CategoryData());
+    private final CategoryRepository mRepository;
     public MutableLiveData<String> pSnackbar = new MutableLiveData<>("");
 
     @Inject
