@@ -9,29 +9,21 @@
             type="com.example.rssreader.ui.channel.dialog.ChannelDialogViewModel" />
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         tools:context=".ui.channel.dialog.ChannelDialogFragment">
-
-        <!-- TODO: Update blank fragment layout -->
-        <androidx.appcompat.widget.AppCompatEditText
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/input_layout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/name"
-            android:text="@={view_model.channel.name}"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:inputType="text" />"
-
-        <androidx.appcompat.widget.AppCompatEditText
-            android:id="@+id/link"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@={view_model.channel.link}"
-            android:hint="リンク"
-            app:layout_constraintTop_toBottomOf="@id/name"
-            android:inputType="textUri" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            android:layout_height="wrap_content">
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/link"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@={view_model.pChannel.link}"
+                android:hint="RSSリンク"
+                android:inputType="textUri" />
+        </com.google.android.material.textfield.TextInputLayout>
+    </LinearLayout>
 </layout>
