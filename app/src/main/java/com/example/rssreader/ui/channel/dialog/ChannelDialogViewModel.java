@@ -1,6 +1,7 @@
 package com.example.rssreader.ui.channel.dialog;
 
-import com.example.rssreader.dao.ChannelDao;
+import android.util.Patterns;
+
 import com.example.rssreader.entities.ChannelData;
 import com.example.rssreader.repository.ChannelRepository;
 
@@ -13,7 +14,8 @@ import io.reactivex.rxjava3.core.Flowable;
 
 @HiltViewModel
 public class ChannelDialogViewModel extends ViewModel {
-    public MutableLiveData<ChannelData> channel = new MutableLiveData<>(new ChannelData());
+    public MutableLiveData<ChannelData> pChannel = new MutableLiveData<>(new ChannelData());
+    public MutableLiveData<String> pSnackbar = new MutableLiveData<>("");
     private final ChannelRepository repository;
 
     @Inject
@@ -23,13 +25,17 @@ public class ChannelDialogViewModel extends ViewModel {
 
     public void regist(boolean isEdit) {
         if (isEdit) {
-            repository.update(channel.getValue());
+            repository.update(pChannel.getValue());
             return;
         }
-        repository.insert(channel.getValue());
+        repository.insert(pChannel.getValue());
+    }
+
+    public boolean isValidUrl() {
+        return Patterns.WEB_URL.matcher(pChannel.getValue().link).matches();
     }
 
     public Flowable<ChannelData> loadChannel() {
-        return repository.select(channel.getValue().id);
+        return repository.select(pChannel.getValue().id);
     }
 }
