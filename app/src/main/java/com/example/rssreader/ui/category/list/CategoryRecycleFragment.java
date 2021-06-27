@@ -10,6 +10,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.RecyclerView;
 import dagger.hilt.android.AndroidEntryPoint;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
@@ -28,6 +30,7 @@ import com.example.rssreader.databinding.ActivityMainBinding;
 import com.example.rssreader.databinding.CategoryRecycleFragmentBinding;
 import com.example.rssreader.entities.CategoryData;
 import com.example.rssreader.entities.ChannelData;
+import com.example.rssreader.ui.CategoryAddClickListener;
 import com.example.rssreader.ui.CategorySelectListener;
 import com.example.rssreader.ui.ItemClickListener;
 import com.example.rssreader.ui.article.list.ArticlesFragment;
@@ -38,12 +41,13 @@ import com.google.android.material.snackbar.Snackbar;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static android.content.ContentValues.TAG;
 
 @AndroidEntryPoint
-public class CategoryRecycleFragment extends Fragment implements ItemClickListener<CategoryData>{
+public class CategoryRecycleFragment extends Fragment implements ItemClickListener<CategoryData>, CategoryAddClickListener {
 
     private CategoryRecycleViewModel mViewModel;
     private CategoryAdapter adapter;
@@ -149,5 +153,15 @@ public class CategoryRecycleFragment extends Fragment implements ItemClickListen
             CategorySelectListener listener = (CategorySelectListener) fragment;
             listener.onSelectedCategory(item);
         }
+        if (!(getActivity() instanceof CategorySelectListener)) {
+            return;
+        }
+        CategorySelectListener selectListener = (CategorySelectListener)getActivity();
+        selectListener.onSelectedCategory(item);
+    }
+
+    @Override
+    public void onCategoryAddClick(CategoryData data) {
+        ChannelDialogFragment.newInstance(data.id).show(getParentFragmentManager(), ChannelDialogFragment.class.getName());
     }
 }
