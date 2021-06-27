@@ -61,17 +61,31 @@ public class CategoryRecycleFragment extends Fragment implements ItemClickListen
         CategoryRecycleFragmentBinding binding = CategoryRecycleFragmentBinding.inflate(getLayoutInflater());
         binding.setLifecycleOwner(this);
         mViewModel = new ViewModelProvider(this).get(CategoryRecycleViewModel.class);
-        mViewModel.RegistListener(this);
+        mViewModel.RegistListener(this, this);
         binding.setViewModel(mViewModel);
         adapter = new CategoryAdapter(binding);
         binding.categoryRecycle.setAdapter(adapter);
         Disposable disposable = mViewModel.reload().subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(value -> adapter.submitList(value),
+                .subscribe(value -> adapter.submitList(createCategoryList(value)),
                         throwable -> Snackbar.make(getView(),
                                 "Unable to submit category data",  Snackbar.LENGTH_SHORT).show());
         compositeDisposable.add(disposable);
         return binding.getRoot();
+    }
+
+    private List<CategoryData> createCategoryList(List<CategoryData> values) {
+        List<CategoryData> list = new ArrayList<>();
+        list.add(createAllCategoryItem());
+        list.addAll(values);
+        return list;
+    }
+
+    private CategoryData createAllCategoryItem() {
+        CategoryData data = new CategoryData();
+        data.id = 0;
+        data.name = "All";
+        return data;
     }
 
     @Override
@@ -80,20 +94,7 @@ public class CategoryRecycleFragment extends Fragment implements ItemClickListen
         compositeDisposable.dispose();
     }
 
-    @Override
-    public boolean onContextItemSelected(MenuItem item) {
-        int position = -1;
-        try {
-            position = adapter.getPosition();
-        } catch (Exception e) {
-            Log.d(TAG, e.getLocalizedMessage(), e);
-            return super.onContextItemSelected(item);
-        }
-        CategoryData data = adapter.getCurrentList().get(position);
-        if (data == null) {
-            Snackbar.make(getView(), "Not selected item", Snackbar.LENGTH_SHORT).show();
-            return super.onContextItemSelected(item);
-        }
+    private void actionContextMenu(@NonNull CategoryData data, @NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.string.edit:
                 CategoryDialogFragment.newInstance(data.id).show(getParentFragmentManager(), CategoryDialogFragment.class.getName());
@@ -110,7 +111,33 @@ public class CategoryRecycleFragment extends Fragment implements ItemClickListen
             default:
                 Snackbar.make(getView(), "Unexpected value: " + item.getItemId(),  Snackbar.LENGTH_SHORT).show();
         }
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        int position = getPosition(item);
+        if (position < 1) {
+            return super.onContextItemSelected(item);
+        }
+        CategoryData data = adapter.getCurrentList().get(position);
+        if (data == null) {
+            Snackbar.make(getView(), "Not selected item", Snackbar.LENGTH_SHORT).show();
+            return super.onContextItemSelected(item);
+        }
+        actionContextMenu(data, item);
         return super.onContextItemSelected(item);
+    }
+
+    private int getPosition(MenuItem item) {
+        if (item == null) {
+            return 0;
+        }
+        try {
+            return adapter.getPosition();
+        } catch (Exception e) {
+            Log.d(TAG, e.getLocalizedMessage(), e);
+        }
+        return 0;
     }
 
     @Override
