@@ -25,15 +25,13 @@ public class MainActivity extends AppCompatActivity implements CategorySelectLis
         if (savedInstanceState != null) {
             return;
         }
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.container, ArticlesFragment.newInstance(0)).commitNow();
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
         mBinding = ActivityMainBinding.inflate(getLayoutInflater());
         View view = mBinding.getRoot();
         setContentView(view);
         mBinding.setLifecycleOwner(this);
         mBinding.setOwner(this);
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.container, ArticlesFragment.newInstance(0)).commitNow();
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.recycle_fragment, CategoryRecycleFragment.newInstance()).commitNow();
     }
