@@ -56,11 +56,14 @@ public class CategoryAdapter extends ListAdapter<CategoryData, CategoryViewHolde
         holder.itemView.setOnCreateContextMenuListener(new View.OnCreateContextMenuListener() {
             @Override
             public void onCreateContextMenu(ContextMenu contextMenu, View view, ContextMenu.ContextMenuInfo contextMenuInfo) {
+                mPosition = holder.getAbsoluteAdapterPosition();
+                if (holder.getAbsoluteAdapterPosition() == 0) {
+                    return;
+                }
                 contextMenu.add(0, R.string.add, 0, R.string.add);
                 contextMenu.add(0, R.string.edit, 0, R.string.edit);
                 contextMenu.add(0, R.string.delete, 0, R.string.delete);
                 contextMenu.add(0, R.string.channel_list, 0, R.string.channel_list);
-                mPosition = holder.getAbsoluteAdapterPosition();
             }
         });
         return holder;
