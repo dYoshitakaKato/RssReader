@@ -11,23 +11,17 @@
             type="com.example.rssreader.entities.ChannelData" />
     </data>
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:onClick="@{() -> view_model.onClick(channel)}"
         android:background="?android:attr/selectableItemBackground"
         android:orientation="horizontal">
 
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/text_margin"
-            android:text="@{channel.name}"
-            android:textAppearance="?attr/textAppearanceListItem" />
-
-        <androidx.appcompat.widget.AppCompatTextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/link"
-            android:layout_width="wrap_content"
+            android:lines="1"
+            android:ellipsize="end"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/text_margin"
             android:text="@{channel.link}"
